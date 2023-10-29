@@ -1,32 +1,47 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <preloading />
+    <div v-if="isLoged">
+      <router-view />
+    </div>
+    <div v-else>
+      <nav-bar />
+      <router-view />
+      <footer-component />
+    </div>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import preloading from "./components/preloading/PreloadingComponent.vue";
+import FooterComponent from "./components/footer/FooterComponent.vue";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import NavBar from "./components/navBar/navBar.vue";
+//import seedDatabaseVue from "./components/sementeDatabase/seedDatabase.vue"
+export default {
+  name: "app-home",
+  components: { preloading, FooterComponent, NavBar },
+  data() {
+    return {
+      isLoged: false,
+      image_perfil_url_global: "",
+    };
+  },
 
-nav {
-  padding: 30px;
-}
+  mounted() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      window.uid = user ? user.uid : null;
+      this.isLoged = !!user;
+      this.$router
+        .push({ name: window.uid ? "dashboard" : "login" })
+        .catch(() => {});
+      setTimeout(() => {
+        this.$root.$emit("loading::hide");
+      }, 300);
+    });
+  },
+};
+</script>
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<style></style>
