@@ -25,7 +25,7 @@
             <b-nav-item :to="{ name: 'cursos' }"
               ><i class="fa-solid fa-graduation-cap"></i>
               <strong class="text-light font-weight-bold">
-                Cursos</strong
+                Estude</strong
               ></b-nav-item
             >
           </b-navbar-nav>
