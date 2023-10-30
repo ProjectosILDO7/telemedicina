@@ -6,7 +6,7 @@
           name: 'curso-detalhe',
           params: { cursos: cursos },
         }"
-        class="text-decoration-non animate__animated animate__backInUp"
+        class="text-decoration-non animate__animated animate__backInUp linkStyle"
       >
         <b-card no-body class="overflow-hidden" style="max-width: 540px">
           <b-row no-gutters>
@@ -46,3 +46,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.linkStyle {
+  text-decoration: none;
+}
+</style>
