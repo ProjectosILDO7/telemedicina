@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --open",
     "dev": "npm run serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "deploy":"vue-cli-service build && firebuild.bat"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",

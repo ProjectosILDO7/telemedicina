@@ -15,12 +15,21 @@
                 :src="url_image"
                 alt="Image"
                 class="rounded-0"
+                style="max-width: 540px"
               ></b-card-img>
             </b-col>
             <b-col md="6">
               <b-card-body :title="nome_curso">
-                <b-card-text>
+                <b-card-text
+                  style="
+                    max-width: 60ch;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  "
+                >
                   {{ perfil_saida }}
+                  <p class="text-center align-item-center small">vêr mais</p>
                 </b-card-text>
               </b-card-body>
             </b-col>

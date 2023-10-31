@@ -12,10 +12,14 @@
             <use xlink:href="#bootstrap"></use>
           </svg>
         </a>
-        <span class="mb-3 mb-md-0 text-muted">© {{ anoActual }} EscolaMedicina-hospitalON, Inc</span>
+        <span class="mb-3 mb-md-0 text-muted"
+          >© {{ anoActual }} EscolaMedicina-telemedicinaChip, Inc</span
+        >
       </div>
 
-      <ul class="nav col-md-4 col-sm-4 justify-content-end list-unstyled d-flex">
+      <ul
+        class="nav col-md-4 col-sm-4 justify-content-end list-unstyled d-flex"
+      >
         <!-- <svg class="bi" width="30" height="24">
             <use xlink:href="#bootstrap"></use>
           </svg>
@@ -45,15 +49,15 @@
 
 <script>
 export default {
-  data(){
-    return{
-      anoActual:''
-    }
+  data() {
+    return {
+      anoActual: "",
+    };
   },
 
   created() {
-    const ano = new Date()
-    this.anoActual = ano.getFullYear()
+    const ano = new Date();
+    this.anoActual = ano.getFullYear();
   },
-}
+};
 </script>
