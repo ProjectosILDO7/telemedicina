@@ -17,15 +17,22 @@
               ></b-nav-item
             >
             <b-nav-item :to="{ name: 'inscricoes' }"
-              ><i class="fa-solid fa-user-graduate"></i>
+              ><i class="fa-solid fa-user"></i>
               <strong class="text-light font-weight-bold">
-                Inscrições</strong
+                Crie uma conta</strong
               ></b-nav-item
             >
             <b-nav-item :to="{ name: 'cursos' }"
               ><i class="fa-solid fa-graduation-cap"></i>
               <strong class="text-light font-weight-bold">
-                Estude</strong
+                Estude saúde</strong
+              ></b-nav-item
+            >
+
+            <b-nav-item :to="{ name: 'findMedico' }"
+              ><i class="fa-solid fa-user-doctor"></i>
+              <strong class="text-light font-weight-bold">
+                Encontre um médico</strong
               ></b-nav-item
             >
           </b-navbar-nav>
