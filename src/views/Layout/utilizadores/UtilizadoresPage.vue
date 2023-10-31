@@ -31,7 +31,7 @@
 
       <div class="d-flex justify-content-between mb-2 col-12">
         <div class="from-group" v-show="utilizadores != ''">
-          <vue-excel-xlsx
+          <!-- <vue-excel-xlsx
             :data="utilizadores"
             :columns="columns"
             :file-name="'Lista-de-utilizadores'"
@@ -41,7 +41,14 @@
             first-text="Primeira"
           >
             <i class="fa fa-file-excel"></i> Baixar
-          </vue-excel-xlsx>
+          </vue-excel-xlsx> -->
+          <export-excel
+            class="btn btn-sm btn-secondary"
+            :data="utilizadores"
+            :name="'Lista-de-utilizadores'"
+          >
+            <i class="fa-solid fa-download"></i> Baixar lista
+          </export-excel>
         </div>
 
         <div class="from-group fw-bold">
@@ -1077,11 +1084,9 @@
               <div
                 class="form-group col-xs-12 col-sm-12 col-md-4 col-lg-4 mb-2"
               >
-                <label
-                  class="text-danger small"
-                  v-if="erros.contacto"
-                  >{{ erros.contacto }}</label
-                >
+                <label class="text-danger small" v-if="erros.contacto">{{
+                  erros.contacto
+                }}</label>
                 <input
                   type="text"
                   class="form-control"
@@ -1107,10 +1112,8 @@
                     paciente</span
                   >
                 </button>
-
               </div>
             </b-row>
-
           </b-card>
         </template>
         <!-- Fim de detalhes de serviços -->
@@ -1387,6 +1390,7 @@
 import moment from "moment";
 import alertMessage from "../../../components/alertas/alertComponent.vue";
 import { getStorage, ref, deleteObject } from "firebase/storage";
+//import vueExcelXlsx from "@vue-excel-xlsx";
 
 export default {
   name: "utilizadores-pages",
@@ -1447,7 +1451,7 @@ export default {
         municipio: "",
         contacto: "",
         curso: "",
-        classe:"",
+        classe: "",
         file_name_bilhete: "",
         url_file_bilhete: "",
         file_name_certificado: "",
@@ -1478,9 +1482,9 @@ export default {
         nome: "",
         nome_do_pai: "",
         nome_da_mae: "",
-        num_bilhete:"",
-        provincia:"",
-        municipio:"",
+        num_bilhete: "",
+        provincia: "",
+        municipio: "",
         morada: "",
         contacto: "",
       },
@@ -1608,7 +1612,7 @@ export default {
   created() {
     this.carregarutilizadores();
     this.carregarCursos();
-    this.carregarClasses()
+    this.carregarClasses();
   },
 
   methods: {
@@ -1645,9 +1649,9 @@ export default {
         nome: "",
         nome_do_pai: "",
         nome_da_mae: "",
-        num_bilhete:"",
-        provincia:"",
-        municipio:"",
+        num_bilhete: "",
+        provincia: "",
+        municipio: "",
         morada: "",
         contacto: "",
       };
@@ -1675,7 +1679,7 @@ export default {
     },
 
     // validar campos de utilizador
-    validarCamposPaciente(){
+    validarCamposPaciente() {
       if (this.item_paciente.nome == "") {
         this.erros.push({
           nome: "Informe o nome do(a) paciente",
@@ -2107,7 +2111,7 @@ export default {
               });
             });
         });
-        this.$root.$emit("loading::hide");
+      this.$root.$emit("loading::hide");
     },
     openFileDilogDocPessoa() {
       this.$refs.fileDoc1.value = "";
@@ -2214,7 +2218,6 @@ export default {
         try {
           if (this.is_alterada_image == false) {
             const { nome } = this.item_utilizador;
-
             await this.$firebase
               .firestore()
               .collection("users")
@@ -2222,7 +2225,7 @@ export default {
               .update({
                 nome,
                 data_criacao: new Date().getTime(),
-                // url_image: url,
+                //url_image: url,
               });
 
             await this.$firebase
@@ -2335,10 +2338,10 @@ export default {
                     });
                 } else {
                   this.$root.$emit("showAlert::show", {
-                        type: "success",
-                        message: "Actualização realizada com sucesso",
-                        titulo: "Sucesso",
-                      });
+                    type: "success",
+                    message: "Actualização realizada com sucesso",
+                    titulo: "Sucesso",
+                  });
                 }
               });
           }
@@ -2407,7 +2410,11 @@ export default {
                 } else {
                   console.log("Nao existe");
                 }
-              } else if (this.item_utilizador.acesso == "professor" || this.item_utilizador.acesso == "medico" || this.item_utilizador.acesso == "enfermeiro") {
+              } else if (
+                this.item_utilizador.acesso == "professor" ||
+                this.item_utilizador.acesso == "medico" ||
+                this.item_utilizador.acesso == "enfermeiro"
+              ) {
                 this.$firebase.firestore().collection("users").doc(id).delete();
 
                 const e = this.$firebase
@@ -2526,7 +2533,6 @@ export default {
       } else {
         try {
           this.loading = true;
-
 
           let url2 = "";
           let url3 = "";

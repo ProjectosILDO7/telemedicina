@@ -21,6 +21,9 @@
             </b-card-text>
             <b-row>
               <b-col>
+                <label class="text-danger small" v-if="erros.url_image">{{
+                  erros.url_image
+                }}</label>
                 <input
                   ref="myFile"
                   type="file"
@@ -251,6 +254,15 @@ export default {
         this.erros.nome = "";
       }
 
+      if (this.items.url_image == "") {
+        this.erros.push({
+          url_image: "Carregue uma foto de perfil",
+        });
+        this.erros.url_image = "Carregue uma foto de perfil";
+      } else {
+        this.erros.url_image = "";
+      }
+
       if (this.items.instituacao == "") {
         this.erros.push({
           instituation: "Seleciona a sua Instituição",
@@ -333,8 +345,6 @@ export default {
       this.erros = [];
       this.validarCampos();
       if (this.erros.length > 0) {
-        console.log(this.erros);
-        this.erros = [];
         this.validarCampos();
       } else {
         this.loading = true;
@@ -343,17 +353,6 @@ export default {
           const user = await this.$firebase
             .auth()
             .createUserWithEmailAndPassword(this.items.email, this.password);
-
-          await this.$firebase
-            .firestore()
-            .collection("users")
-            .doc(user.user.uid)
-            .set({
-              ...this.items,
-              url_image: url,
-              status: "activo",
-              createdAt: new Date().getTime(),
-            });
 
           if (this.items.url_image) {
             // Inserir nova imagem no Storage
@@ -365,6 +364,17 @@ export default {
             this.items.image_name = this.fileName;
             url = await snapshot.ref.getDownloadURL();
           }
+
+          await this.$firebase
+            .firestore()
+            .collection("users")
+            .doc(user.user.uid)
+            .set({
+              ...this.items,
+              url_image: url,
+              status: "activo",
+              createdAt: new Date().getTime(),
+            });
         } catch (error) {
           console.log(error.message);
         } finally {
