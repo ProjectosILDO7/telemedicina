@@ -71,6 +71,15 @@ const routes = [
     component:()=>import('../components/cursos/cursoDetalhe.vue')
   },
   {
+    path:'/medico-detalhe/:m',
+    name:'medico-detalhe',
+    props:true,
+    meta:{
+      icon:'info', title:'Detalhes-curso'
+    },
+    component:()=>import('../components/findMedico/medicoDetalhe.vue')
+  },
+  {
     path:'/admin',
     name:'dashboard',
     meta:{
@@ -186,7 +195,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next)=>{
   document.title=`${to.meta.title} - TelemedicinaChip`
-  if(!window.uid && to.name !=='login' && to.name !=='home' && to.name !=='paciente' && to.name !=='curso-detalhe' && to.name !=='curso-componente' && to.name !=='cursos' && to.name !=='inscricoes' && to.name !=='reset-password' && to.name !=="findMedico"){
+  if(!window.uid && to.name !=='login' && to.name !=='home' && to.name !=='paciente' && to.name !=='curso-detalhe' && to.name !=='curso-componente' && to.name !=='cursos' && to.name !=='inscricoes' && to.name !=='reset-password' && to.name !=="findMedico" && to.name !=="medico-detalhe"){
     next({name:'home'})
   }else{
     next()

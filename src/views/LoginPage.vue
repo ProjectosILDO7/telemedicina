@@ -4,7 +4,7 @@
       <b-row no-gutters>
         <b-col md="6">
           <b-card-img
-            src="/img/loginRegister.jpg"
+            src="/img/login-register.jpg"
             alt="Image"
             class="rounded-0"
           ></b-card-img>
@@ -78,14 +78,15 @@
                       :to="{ name: 'inscricoes' }"
                       class="text-secondary text-decoration-none"
                     >
-                    <i class="fa-solid fa-envelope"></i> Crie uma conta
+                      <i class="fa-solid fa-envelope"></i> Crie uma conta
                     </router-link>
                   </b-col>
                   <b-col md="6" class="text-center text-secondary">
                     <router-link
                       :to="{ name: 'reset-password' }"
                       class="text-decoration-none"
-                      ><i class="fa-solid fa-user-lock"></i> Esqueci a senha</router-link
+                      ><i class="fa-solid fa-user-lock"></i> Esqueci a
+                      senha</router-link
                     >
                   </b-col>
                 </b-row>
