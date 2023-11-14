@@ -24,7 +24,7 @@
       allow="camera; microphone"
       allowfullscreen
     ></iframe> -->
-    <div class="container">
+    <div class="container-fluid">
       <b-row>
         <b-col class="m-auto text-danger text-center">
           <span v-if="!conferencia"
@@ -34,7 +34,7 @@
           <b-table
             v-else
             responsive
-            :items="conferencia"
+            :items="teleaulas"
             fixed
             :fields="fields"
             :current-page="currentPage"
@@ -51,7 +51,7 @@
             caption-top
             class="text-start"
           >
-            <template #table-caption>Lista de actividades.</template>
+            <template #table-caption>Lista de actividades semanais.</template>
 
             <template #cell(name)="row">
               {{ row.value.first }} {{ row.value.last }}
@@ -86,51 +86,51 @@
                 class="d-flex justify-content-start"
                 v-if="
                   (row.item.status == '0' && acesso == 'SuperAdmin-dev') ||
-                  acesso == 'professor' ||
-                  acesso == 'medico' ||
-                  acesso == 'enfermeiro'
+                  acesso == 'professor'
                 "
               >
-                <a
-                  @click="iniciarConferencia(row.item.id)"
-                  :href="`https://meet.jit.si/${row.item.turma}`"
+                <button
+                  @click="eniciarTeleaula(row.item.id)"
+                  v-if="row.item.status != 1"
                   class="btn btn-sm btn-primary"
-                  target="_blank"
-                  start="fullscreen"
-                  ><i class="fa-solid fa-chalkboard-user"></i> Iniciar
-                  conferência</a
                 >
-              </div>
-
-              <div
-                class="d-flex justify-content-start text-danger"
-                v-else-if="
-                  (row.item.status == '1' && acesso == 'SuperAdmin-dev') ||
-                  acesso == 'professor' ||
-                  acesso == 'medico' ||
-                  acesso == 'enfermeiro'
-                "
-              >
-                <span
-                  ><i class="fa-solid fa-chalkboard-user"></i> Você já deu
-                  início a esta conferência</span
+                  <span v-if="loadingTeleAula"
+                    ><i class="fa-solid fa-circle-notch fa-spin"></i> Iniciar
+                    ...</span
+                  >
+                  <span v-else></span><i class="fa-solid fa-video"></i>
+                </button>
+                <button
+                  v-else
+                  @click="statusOn()"
+                  class="btn btn-sm btn-secondary"
                 >
+                  <i class="fa-solid fa-video-slash"></i>
+                </button>
               </div>
 
               <div
                 class="d-flex justify-content-start"
-                v-if="
-                  (row.item.status == '1' && acesso == 'estudante') ||
-                  acesso == 'paciente'
-                "
+                v-if="row.item.status == '1' && acesso == 'estudante'"
               >
-                <a
-                  :href="`https://meet.jit.si/${row.item.turma}`"
+                <button
+                  @click="eniciarTeleaulaAluno()"
+                  v-if="row.item.status != 0"
                   class="btn btn-sm btn-primary"
-                  target="_blank"
-                  start="fullscreen"
-                  ><i class="fa-solid fa-chalkboard-user"></i> Participar</a
                 >
+                  <span v-if="loadingTeleAula"
+                    ><i class="fa-solid fa-circle-notch"></i> Iniciar ...</span
+                  >
+                  <span v-else></span><i class="fa-solid fa-video"></i>
+                </button>
+
+                <button
+                  v-else
+                  @click="statusOnEstudante()"
+                  class="btn btn-sm btn-secondary"
+                >
+                  <i class="fa-solid fa-video-slash"></i>
+                </button>
               </div>
 
               <div
@@ -175,44 +175,52 @@
           "
         >
           <div class="card">
-            <div class="card-header">Cria sua turma de aulas</div>
+            <div class="card-header">Cria horário de actividade</div>
             <div class="card-body">
               <alert-message></alert-message>
               <b-row>
                 <b-col md="12" class="mb-2">
-                  <span class="text-danger small" v-if="erros.turma">{{
-                    erros.turma
+                  <span class="text-danger small" v-if="erros.dia_semanal">{{
+                    erros.dia_semanal
+                  }}</span>
+                  <select
+                    type="text"
+                    placeholder="Deia um nome da turma"
+                    v-model="items.dia_semanal"
+                    class="form-select"
+                  >
+                    <option selected value="">Selecione um dia semanal</option>
+                    <option value="Segunda-feira">Segunda-feira</option>
+                    <option value="Terça-feira">Terça-feira</option>
+                    <option value="Quarta-feira">Quarta-feira</option>
+                    <option value="Quinta-feira">Quinta-feira</option>
+                    <option value="Sexta-feira">Sexta-feira</option>
+                  </select>
+                </b-col>
+
+                <b-col md="12" class="mb-2">
+                  <span class="text-danger small" v-if="erros.periodo">{{
+                    erros.periodo
+                  }}</span>
+                  <select class="form-select" v-model="items.periodo">
+                    <option value="" selected>Selecione um período</option>
+                    <option value="manha">Manhã</option>
+                    <option value="tarde">Tarde</option>
+                    <option value="noite">Noite</option>
+                  </select>
+                </b-col>
+
+                <b-col md="6" class="mb-2">
+                  <span class="text-danger small" v-if="erros.horario">{{
+                    erros.horario
                   }}</span>
                   <input
                     type="text"
-                    placeholder="Deia um nome da turma"
-                    v-model="items.turma"
+                    onfocus="(this.type='time')"
+                    placeholder="Horário"
+                    v-model="items.horario"
                     class="form-control"
                   />
-                </b-col>
-
-                <b-col md="6" class="mb-2">
-                  <span class="text-danger small" v-if="erros.curso">{{
-                    erros.curso
-                  }}</span>
-                  <select class="form-select" v-model="items.curso">
-                    <option selected>Selecione um curso</option>
-                    <option v-for="(c, index) in cursos" :key="index">
-                      {{ c.nome_curso }}
-                    </option>
-                  </select>
-                </b-col>
-
-                <b-col md="6" class="mb-2">
-                  <span class="text-danger small" v-if="erros.classe">{{
-                    erros.classe
-                  }}</span>
-                  <select class="form-select" v-model="items.classe">
-                    <option selected>Selecione uma classe</option>
-                    <option v-for="(c, index) in classes" :key="index">
-                      {{ c.nome_classe }}
-                    </option>
-                  </select>
                 </b-col>
 
                 <b-col md="6" class="mb-2">
@@ -228,17 +236,36 @@
                   />
                 </b-col>
 
-                <b-col md="6" class="mb-2">
-                  <span class="text-danger small" v-if="erros.time">{{
-                    erros.time
+                <b-col md="12" class="mb-2">
+                  <span class="text-danger small" v-if="erros.curso">{{
+                    erros.curso
                   }}</span>
-                  <input
-                    type="text"
-                    onfocus="(this.type='time')"
-                    placeholder="Início"
-                    v-model="items.time"
-                    class="form-control"
-                  />
+                  <select class="form-select" v-model="items.curso">
+                    <option value="" selected>Selecione um curso</option>
+                    <option
+                      :value="c.curso"
+                      v-for="(c, index) in cursos"
+                      :key="index"
+                    >
+                      {{ c.curso }}
+                    </option>
+                  </select>
+                </b-col>
+
+                <b-col md="12" class="mb-2">
+                  <span class="text-danger small" v-if="erros.classe">{{
+                    erros.classe
+                  }}</span>
+                  <select class="form-select" v-model="items.classe">
+                    <option value="" selected>Selecione um classe</option>
+                    <option
+                      :value="cls.classe"
+                      v-for="(cls, index) in classes"
+                      :key="index"
+                    >
+                      {{ cls.classe }}
+                    </option>
+                  </select>
                 </b-col>
 
                 <b-col md="12 mt-4">
@@ -253,8 +280,8 @@
                         Aguarde ...</span
                       >
                       <span v-else>
-                        <i class="fa-solid fa-chalkboard-user"></i> Criar turma
-                        de conferência</span
+                        <i class="fa-solid fa-chalkboard-user"></i> Criar
+                        horário para tele-aulas</span
                       >
                     </button>
                   </div>
@@ -278,16 +305,20 @@ export default {
   data() {
     return {
       erros: [],
+      idInstiuicao: "",
       cursoEstudante: "",
       conferencia: [],
       cursos: [],
       classes: [],
+      teleaulas: [],
       loading: false,
+      loadingTeleAula: false,
       conferenciaEstudante: [],
       items: {
-        data: "",
-        time: "",
-        turma: "",
+        dia_semanal: "",
+        periodo: "",
+        horario: "",
+        Data: "",
         curso: "",
         classe: "",
       },
@@ -295,34 +326,47 @@ export default {
       is_turma: null,
       columns: [
         {
-          label: "Conferência de:",
-          field: "curso",
+          label: "Dia semanal",
+          field: "dia_semanal",
           //dataFormat: this.priceFormat
         },
 
         {
-          label: "Sala",
-          field: "turma",
+          label: "Período",
+          field: "periodo",
+        },
+        {
+          label: "Horário",
+          field: "horario",
         },
         {
           label: "Data",
           field: "data",
         },
         {
-          label: "Início",
-          field: "time",
+          label: "Curso",
+          field: "curso",
+        },
+        {
+          label: "Classe",
+          field: "classe",
         },
       ],
 
       fields: [
         {
-          key: "curso",
-          label: "Conferência de:",
+          key: "dia_semanal",
+          label: "Dia Semanal:",
           sortable: true,
         },
         {
-          key: "turma",
-          label: "Sala",
+          key: "periodo",
+          label: "Período",
+          sortable: true,
+        },
+        {
+          key: "horario",
+          label: "Horário",
           sortable: true,
         },
         {
@@ -331,8 +375,13 @@ export default {
           sortable: true,
         },
         {
-          key: "time",
-          label: "Início",
+          key: "curso",
+          label: "Curso",
+          sortable: true,
+        },
+        {
+          key: "classe",
+          label: "Classe",
           sortable: true,
         },
 
@@ -409,10 +458,8 @@ export default {
 
   created() {
     this.is_turma = false;
-    this.carregarCursos();
-    this.carregarClasses();
-    this.carregarConferencia();
-    this.carregarConferenciaEstudante();
+    this.carregarUserActual();
+    this.carregarTeleAulas();
   },
 
   methods: {
@@ -422,60 +469,80 @@ export default {
       this.currentPage = 1;
     },
 
+    statusOn() {
+      this.$swal.fire({
+        title: "Oops..",
+        text: "Ola! professor, você já ministrou essa aula datada neste dia",
+        icon: "info",
+        confirmationButtonText: "Ok",
+      });
+    },
+
+    statusOnEstudante() {
+      this.$swal.fire({
+        title: "Oops..",
+        text: "Ola! estudante, esta aula já foi ministrada pelo professor",
+        icon: "info",
+        confirmationButtonText: "Ok",
+      });
+    },
+
+    async eniciarTeleaula(id) {
+      this.loadingTeleAula = true;
+      try {
+        this.loadingIniciarVideo = true;
+        await this.$firebase
+          .firestore()
+          .collection("tele-aulas")
+          .doc(id)
+          .update({ status: 1 })
+          .then(() => {
+            this.$router.push({ name: "auth0" });
+          });
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        this.loadingTeleAula = false;
+        this.carregarTeleAulas();
+      }
+    },
+
+    eniciarTeleaulaAluno() {
+      this.$router.push({ name: "auth0" });
+    },
     // formatoDeData() {
     //   return moment(this.Classes.data_criacao).format("DD-MM-YYYY");
     // },
 
     cleanForm() {
       this.items = {
+        dia_semanal: "",
+        horario: "",
+        perirodo: "",
         data: "",
-        time: "",
-        turma: "",
         curso: "",
         classe: "",
       };
     },
 
-    async carregarConferencia() {
+    async carregarTeleAulas() {
       try {
         await this.$firebase
           .firestore()
-          .collection("videoconferencia")
-          .where("responsavelID", "==", window.uid)
+          .collection("tele-aulas")
+          .where("idProfessor", "==", window.uid)
           .get()
           .then((snapshot) => {
-            (this.conferencia = []),
+            (this.teleaulas = []),
               snapshot.forEach((doc) => {
-                this.conferencia.push({
+                this.teleaulas.push({
                   id: doc.id,
-                  curso: doc.data().curso,
-                  inicio: doc.data().time,
-                  turma: doc.data().turma,
+                  dia_semanal: doc.data().dia_semanal,
+                  horario: doc.data().horario,
+                  periodo: doc.data().periodo,
                   data: doc.data().data,
-                  status: doc.data().status,
-                });
-              });
-          });
-      } catch (error) {
-        console.log(error.message);
-      }
-    },
-    async carregarConferenciaEstudante() {
-      try {
-        await this.$firebase
-          .firestore()
-          .collection("videoconferencia")
-          .where("curso", "==", this.cursoEstudante)
-          .get()
-          .then((snapshot) => {
-            (this.conferenciaEstudante = []),
-              snapshot.forEach((doc) => {
-                this.conferenciaEstudante.push({
-                  id: doc.id,
                   curso: doc.data().curso,
-                  inicio: doc.data().time,
-                  turma: doc.data().turma,
-                  data: doc.data().data,
+                  classe: doc.data().classe,
                   status: doc.data().status,
                 });
               });
@@ -497,19 +564,51 @@ export default {
         console.log(error.message);
       }
     },
-    async carregarClasses() {
+
+    async carregarUserActual() {
+      await this.$firebase
+        .firestore()
+        .collection("users")
+        .doc(window.uid)
+        .get()
+        .then((snp) => {
+          this.carregarClasses(snp.data().instituacao);
+          this.carregarCursos(snp.data().instituacao);
+        });
+    },
+
+    async carregarClasses(idInstituicao) {
       this.$root.$emit("loading::show");
       await this.$firebase
         .firestore()
         .collection("Classes")
-        .where("idUser", "==", window.uid)
+        .where("idUser", "==", idInstituicao)
         .get()
         .then((snapshot) => {
           (this.classes = []),
             snapshot.forEach((doc) => {
               this.classes.push({
                 id: doc.id,
-                nome_classe: doc.data().nome_classe,
+                classe: doc.data().nome_classe,
+              });
+            });
+        });
+      this.$root.$emit("loading::hide");
+    },
+
+    async carregarCursos(idInstituicao) {
+      this.$root.$emit("loading::show");
+      await this.$firebase
+        .firestore()
+        .collection("cursos")
+        .where("idUser", "==", idInstituicao)
+        .get()
+        .then((snapshot) => {
+          (this.cursos = []),
+            snapshot.forEach((doc) => {
+              this.cursos.push({
+                id: doc.id,
+                curso: doc.data().nome_curso,
               });
             });
         });
@@ -517,30 +616,30 @@ export default {
     },
 
     validaCampo() {
-      if (this.items.turma == "") {
+      if (this.items.dia_semanal == "") {
         this.erros.push({
-          turma: "Informe o nome da turma",
+          dia_semanal: "Informe o dia da semana",
         });
-        this.erros.turma = "Informe o nome da turma";
+        this.erros.dia_semanal = "Informe o dia da semana";
       }
-      if (this.items.data == "") {
+      if (this.items.horario == "") {
         this.erros.push({
-          data: "Informe a data do inicio das aulas",
+          horario: "Informe o horário do inicio da aula",
         });
-        this.erros.data = "Informe a data do inicio das aulas";
+        this.erros.horario = "Informe o horário do inicio da aula";
       }
-      if (this.items.time == "") {
+      if (this.items.periodo == "") {
         this.erros.push({
-          time: "Informe a hora do inicio das aulas",
+          periodo: "Informe o período da aula",
         });
-        this.erros.time = "Informe a hora do inicio das aulas";
+        this.erros.periodo = "Informe o período da aula";
       }
 
-      if (this.items.curso == "") {
+      if (this.items.data == "") {
         this.erros.push({
-          curso: "Selecione um curso",
+          data: "Selecione um curso",
         });
-        this.erros.curso = "Selecione um curso";
+        this.erros.data = "Selecione um curso";
       }
 
       if (this.items.classe == "") {
@@ -549,25 +648,12 @@ export default {
         });
         this.erros.classe = "Selecione uma classe";
       }
-    },
-
-    async carregarCursos() {
-      this.$root.$emit("loading::show");
-      await this.$firebase
-        .firestore()
-        .collection("cursos")
-        .where("idUser", "==", window.uid)
-        .get()
-        .then((snapshot) => {
-          (this.cursos = []),
-            snapshot.forEach((doc) => {
-              this.cursos.push({
-                id: doc.id,
-                nome_curso: doc.data().nome_curso,
-              });
-            });
+      if (this.items.curso == "") {
+        this.erros.push({
+          curso: "Selecione um curso",
         });
-      this.$root.$emit("loading::hide");
+        this.erros.curso = "Selecione um curso";
+      }
     },
 
     async criarTurma() {
@@ -576,76 +662,32 @@ export default {
       if (this.erros.length > 0) {
         this.validaCampo();
       } else {
+        this.loading = true;
         try {
-          this.loading = true;
-          let milisegundos = this.items.data;
-          const a = await this.$firebase
-            .firestore()
-            .collection("users")
-            .doc(window.uid)
-            .get();
-          const len = 10;
-          const arr = "abcde";
-          let ans = "";
-          for (var i = len; i > 0; i--) {
-            ans += arr[Math.floor(Math.random() * arr.length)];
-          }
-          const { turma } = this.items;
-          console.log(turma + ans);
-          const turmaRandom = turma + " - " + ans;
           await this.$firebase
             .firestore()
-            .collection("videoconferencia")
-            .add({
-              ...this.items,
-              turma: turmaRandom,
-              data: new Date(milisegundos).getTime(),
-              horaRegisto: new Date().getHours(),
-              responsavel: a.data().nome,
-              responsavelID: window.uid,
-              createdAt: new Date().getTime(),
-              area: a.data().acesso,
-              status: "0",
-            })
+            .collection("tele-aulas")
+            .add({ ...this.items, idProfessor: window.uid, status: 0 })
             .then(() => {
-              this.$root.$emit("showAlert::show", {
-                type: "success",
-                message: "A sua turma foi criada com sucesso",
-                titulo: "Sucesso",
+              this.$swal.fire({
+                title: "Sucesso",
+                icon: "success",
+                text: "O seu horário de trabalho foi adicionado com sucesso",
+                confirmationButtonText: "Ok",
               });
-              this.carregarConferencia();
             });
         } catch (error) {
-          this.$root.$emit("showAlert::show", {
-            type: "danger",
-            message: error.code,
-            titulo: "Erro",
+          this.$swal.fire({
+            title: "Erro",
+            icon: "danger",
+            text: error.message,
+            confirmationButtonText: "Ok",
           });
         } finally {
           this.loading = false;
           this.cleanForm();
+          this.carregarTeleAulas();
         }
-      }
-    },
-
-    async iniciarConferencia(id) {
-      try {
-        await this.$firebase
-          .firestore()
-          .collection("videoconferencia")
-          .doc(id)
-          .update({
-            status: "1",
-          })
-          .then(() => {
-            this.carregarConferencia();
-          });
-      } catch (error) {
-        this.$root.$emit("showAlert::show", {
-          type: "danger",
-          message: error.code,
-          titulo: "Erro",
-        });
       }
     },
   },

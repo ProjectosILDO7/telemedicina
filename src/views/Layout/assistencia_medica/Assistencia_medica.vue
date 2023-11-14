@@ -15,7 +15,7 @@
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
           >
-            Criar Routina de trabalho
+            Cadastrar dias para consultas
           </button>
         </b-col>
 
@@ -108,7 +108,11 @@
         small
         caption-top
       >
-        <template #table-caption>Lista de actividades agendadas.</template>
+        <template #table-caption
+          ><strong v-if="acesso == 'medico'"
+            >Dias de consultas.</strong
+          ></template
+        >
         <template #cell(actions)="row">
           <button
             class="btn btn-sm"
@@ -117,18 +121,6 @@
           >
             <i class="fa-solid fa-trash text-danger"></i>
           </button>
-          <a
-            @click="iniciarConsulta(row.item.id)"
-            target="_blank"
-            :href="`https://meet.jit.si/${row.item.id}`"
-            v-if="acesso == 'medico' && row.item.status != 1"
-            class="btn btn-sm btn-success"
-            ><i class="fa-solid fa-chalkboard-user"></i> Iniciar a consulta</a
-          >
-          <a href="#" v-else class="btn btn-sm btn-success" disabled
-            ><i class="fa-solid fa-chalkboard-user"></i> Você já deu início a
-            esta sessão</a
-          >
         </template>
       </b-table>
 
@@ -142,20 +134,20 @@
         small
         caption-top
       >
-        <template #table-caption>Lista de actividades agendadas.</template>
+        <template #table-caption
+          ><strong>
+            Consultas marcadas - aguardando para interagir com o médico
+          </strong></template
+        >
         <template #cell(actions)="row">
           <div v-if="acesso == 'paciente' && row.item.status != 0">
-            <a
-              :href="`https://meet.jit.si/${row.item.paciente}`"
-              class="btn btn-success"
-              ><i class="fa-solid fa-chalkboard-user"></i> Entrar em consulta</a
-            >
+            <router-link :to="{ name: 'auth0' }"
+              ><i class="fa-solid fa-video text-success"></i
+            ></router-link>
           </div>
           <div v-else>
-            <a href="#" class="text-secondary"
-              ><i class="fa-solid fa-chalkboard-user text-success"></i> Aguarde
-              o inicio pelo responsavel</a
-            >
+            <a href="#"><i class="fa-solid fa-video-slash text-danger"></i></a>
+            - {{ row.item.status }}
           </div>
         </template>
       </b-table>
@@ -172,7 +164,7 @@
 
 <script>
 import alertMessage from "../../../components/alertas/alertComponent.vue";
-import { where, or } from "firebase/firestore";
+// import { where, or } from "firebase/firestore";
 export default {
   components: { alertMessage },
   name: "routina_medica",
@@ -197,16 +189,16 @@ export default {
           key: "horas",
           sortable: true,
         },
-        { key: "actions", label: "Acções" },
+        { key: "actions", label: "Status" },
       ],
     };
   },
 
   created() {
-    this.carregarRoutina();
+    this.userAuth();
     this.carregarFucnionario();
     this.carregarRoutinaMedica();
-    this.userAuth();
+    this.carregarRoutina();
   },
 
   methods: {
@@ -273,33 +265,66 @@ export default {
       }
     },
     async carregarRoutina() {
-      this.$root.$emit("loading::show");
-      try {
-        await this.$firebase
-          .firestore()
-          .collection(
-            "consultas_marcadas",
-            where("idResponsavel", "==", window.uid),
-            or(where("idPaciente", "==", window.uid))
-          )
-          .get()
-          .then((snapshot) => {
-            (this.itemsPaciente = []),
-              snapshot.forEach((doc) => {
-                this.itemsPaciente.push({
-                  id: doc.id,
-                  dia: new Date(doc.data().data).getDay(),
-                  data: doc.data().data,
-                  horas: doc.data().horas,
-                  status: doc.data().status,
-                  paciente: doc.data().paciente,
+      var userAcess = "";
+      await this.$firebase
+        .firestore()
+        .collection("users")
+        .doc(window.uid)
+        .get()
+        .then((snap) => {
+          userAcess = snap.data().acesso;
+        });
+      console.log(userAcess);
+      if (userAcess == "paciente") {
+        try {
+          await this.$firebase
+            .firestore()
+            .collection("consultas_marcadas")
+            .where("idPaciente", "==", window.uid)
+            .get()
+            .then((snapshot) => {
+              (this.itemsPaciente = []),
+                snapshot.forEach((doc) => {
+                  this.itemsPaciente.push({
+                    id: doc.id,
+                    dia: new Date(doc.data().data).getDay(),
+                    data: doc.data().data,
+                    horas: doc.data().horas,
+                    status: doc.data().status,
+                    paciente: doc.data().paciente,
+                  });
                 });
-              });
-          });
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        this.$root.$emit("loading::hide");
+            });
+        } catch (error) {
+          console.log(error.message);
+        } finally {
+          this.$root.$emit("loading::hide");
+        }
+      } else {
+        try {
+          await this.$firebase
+            .firestore()
+            .collection("consultas_marcadas")
+            .where("idResponsavel", "==", window.uid)
+            .get()
+            .then((snapshot) => {
+              (this.itemsPaciente = []),
+                snapshot.forEach((doc) => {
+                  this.itemsPaciente.push({
+                    id: doc.id,
+                    dia: new Date(doc.data().data).getDay(),
+                    data: doc.data().data,
+                    horas: doc.data().horas,
+                    status: doc.data().status,
+                    paciente: doc.data().paciente,
+                  });
+                });
+            });
+        } catch (error) {
+          console.log(error.message);
+        } finally {
+          this.$root.$emit("loading::hide");
+        }
       }
     },
 
@@ -396,10 +421,23 @@ export default {
       console.log(id);
       await this.$firebase
         .firestore()
-        .collection("consultas_marcadas")
+        .collection("routina_medica")
         .doc(id)
-        .delete();
-      this.carregarRoutina();
+        .delete()
+        .then(() => {
+          this.$swal.fire({
+            title: "Sucesso",
+            text: "Routina médica apagada com sucesso",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.carregarRoutinaMedica();
+        });
     },
   },
 };

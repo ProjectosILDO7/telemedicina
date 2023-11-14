@@ -106,6 +106,11 @@ export default {
     return {
       routinamedica: [],
       moment: moment,
+      dataPaciente: {
+        nome: "",
+        telemovel: "",
+        url_image: "",
+      },
       loadingRoutina: false,
       fields: [
         {
@@ -181,32 +186,42 @@ export default {
           });
           return;
         } else {
-          await this.$firebase
+          this.$firebase
             .firestore()
-            .collection("consultas_marcadas")
-            .doc(idRoutina)
-            .set({
-              idPaciente: window.uid,
-              idRoutinaMedica: idRoutina,
-              idReponsavel: idMedico,
-              data: data,
-              mes: mes,
-              horas: hora,
-              paciente: "Paciente-" + window.uid,
-              status: 0,
-            })
-            .then(() => {
-              this.$swal.fire({
-                title: "Sucesso",
-                text:
-                  "Consulta marcada com sucesso para o dia " +
-                  data +
-                  " às " +
-                  hora +
-                  " em modo de conferência porfavor esteje preparado/a.",
-                icon: "success",
-                confirmButtonText: "Ok",
-              });
+            .collection("users")
+            .doc(window.uid)
+            .get()
+            .then((snp) => {
+              this.$firebase
+                .firestore()
+                .collection("consultas_marcadas")
+                .doc(window.uid)
+                .set({
+                  idPaciente: window.uid,
+                  idRoutinaMedica: idRoutina,
+                  idReponsavel: idMedico,
+                  data: data,
+                  nome: snp.data().nome,
+                  telemovel: snp.data().telemovel,
+                  url_image: snp.data().url_image,
+                  mes: mes,
+                  horas: hora,
+                  paciente: "Paciente-" + window.uid,
+                  status: 0,
+                })
+                .then(() => {
+                  this.$swal.fire({
+                    title: "Sucesso",
+                    text:
+                      "Consulta marcada com sucesso para o dia " +
+                      data +
+                      " às " +
+                      hora +
+                      " em modo de conferência porfavor esteje preparado/a.",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                  });
+                });
             });
         }
       } catch (error) {

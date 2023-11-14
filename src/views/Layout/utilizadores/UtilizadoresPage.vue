@@ -363,8 +363,18 @@
 
               <b-col md="12"
                 ><h6>
-                  <span class="text-secondary">Realizar matriculas de:</span
-                  ><strong class="text-danger"> {{ row.item.nome }}</strong>
+                  <strong class="d-flex justify-content-between">
+                    <span class="text-secondary"
+                      >Realizar matriculas de:
+                      <span class="text-danger">{{ row.item.nome }}</span></span
+                    >
+                    <span class="text-secondary"
+                      >Curso -
+                      <span class="text-danger">{{
+                        row.item.curso
+                      }}</span></span
+                    ></strong
+                  >
                 </h6></b-col
               >
               <div
@@ -498,24 +508,11 @@
                 />
               </div>
               <b-row class="text-center text-muted mb-2 mt-2">
-                <b-col>Selecione um curso e uma classe</b-col>
+                <b-col>Selecione uma classe</b-col>
               </b-row>
-              <div
-                class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2"
-              >
-                <label class="text-danger small" v-if="erros.curso">{{
-                  erros.curso
-                }}</label>
-                <select class="form-select" v-model="item_estudante.curso">
-                  <option selected value="">Selecione um curso</option>
-                  <option v-for="(curso, index) in cursos" :key="index">
-                    {{ curso.nome_curso }}
-                  </option>
-                </select>
-              </div>
 
               <div
-                class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2"
+                class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12 mb-2"
               >
                 <label class="text-danger small" v-if="erros.classe">{{
                   erros.classe
@@ -622,7 +619,14 @@
               >
                 <button
                   class="btn btn-primary"
-                  @click="salvar_estudante(row.item.id, row.item.url_image)"
+                  @click="
+                    salvar_estudante(
+                      row.item.id,
+                      row.item.url_image,
+                      row.item.curso,
+                      row.item.email
+                    )
+                  "
                   :disabled="loading"
                 >
                   <span v-if="loading"
@@ -1337,6 +1341,60 @@
                     </select>
                   </b-col>
                 </b-row>
+
+                <b-row v-if="selectOption == 'estudante'" class="mt-2">
+                  <b-col md="12" class="d-flex justify-content-between">
+                    <label class="text-secondary"
+                      ><strong>Desja Alterar o curso ?</strong></label
+                    >
+                    <div
+                      class="form-check"
+                      @click="selectSim()"
+                      style="cursor: pointer"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="flexRadioDefault"
+                        id="Sim"
+                      />
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        Sim
+                      </label>
+                    </div>
+                    <div
+                      class="form-check"
+                      @click="selectNao()"
+                      style="cursor: pointer"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="flexRadioDefault"
+                        id="Não"
+                        checked
+                      />
+                      <label class="form-check-label" for="flexRadioDefault2">
+                        Não
+                      </label>
+                    </div>
+                  </b-col>
+                  <b-col v-if="statusOptioCurso == 'Sim'">
+                    <select
+                      class="form-control"
+                      v-model="item_utilizador.curso"
+                    >
+                      <option value="" selected>Selecione um curso</option>
+                      <option
+                        :value="c.nome_curso"
+                        v-for="(c, index) in cursos"
+                        :key="index"
+                      >
+                        {{ c.nome_curso }}
+                      </option>
+                    </select>
+                  </b-col>
+                </b-row>
               </div>
               <div class="modal-footer">
                 <button
@@ -1390,6 +1448,7 @@
 import moment from "moment";
 import alertMessage from "../../../components/alertas/alertComponent.vue";
 import { getStorage, ref, deleteObject } from "firebase/storage";
+//import { where } from "firebase/firestore";
 //import vueExcelXlsx from "@vue-excel-xlsx";
 
 export default {
@@ -1398,6 +1457,7 @@ export default {
   data() {
     return {
       selectOption: "",
+      statusOptioCurso: "Não",
       utilizadores: [],
       editFormID: "",
       text: "",
@@ -1616,6 +1676,12 @@ export default {
   },
 
   methods: {
+    selectSim() {
+      this.statusOptioCurso = "Sim";
+    },
+    selectNao() {
+      this.statusOptioCurso = "Não";
+    },
     cleanFormEstudante() {
       this.item_estudante = {
         nome: "",
@@ -1879,15 +1945,6 @@ export default {
           "O nº do terminal deve conter no máximo 9 dígitos";
       } else {
         this.erros.contacto = "";
-      }
-
-      if (this.item_estudante.curso == "") {
-        this.erros.push({
-          curso: "Selecione um curso",
-        });
-        this.erros.curso = "Selecione um curso";
-      } else {
-        this.erros.curso = "";
       }
 
       if (this.item_estudante.url_file_bilhete == "") {
@@ -2161,7 +2218,7 @@ export default {
       await this.$firebase
         .firestore()
         .collection("users")
-        .where("acesso", "!=", "SuperAdmin-dev")
+        .where("instituacao", "==", window.uid)
         .get()
         .then((snapshot) => {
           (this.utilizadores = []),
@@ -2173,6 +2230,8 @@ export default {
                 acesso: doc.data().acesso,
                 genero: doc.data().genero,
                 status: doc.data().status,
+                curso: doc.data().curso,
+                email: doc.data().email,
                 createdAt: moment(doc.data().createdAt).format("DD-MM-YYYY"),
               });
             });
@@ -2525,15 +2584,15 @@ export default {
       return moment(this.utilizadores.data_criacao).format("DD-MM-YYYY");
     },
 
-    async salvar_estudante(id, image) {
+    async salvar_estudante(id, image, curso, email) {
       this.erros = [];
+      console.log(curso);
       this.validarCampos();
       if (this.erros.length > 0) {
         this.validarCampos();
       } else {
         try {
           this.loading = true;
-
           let url2 = "";
           let url3 = "";
           // Verfica se existe uma estudante com o mesmo número de blilhete
@@ -2581,6 +2640,9 @@ export default {
             .set({
               ...this.item_estudante,
               url_image: image,
+              curso,
+              email,
+              idInstituicao: window.uid,
               data_criacao: new Date().getTime(),
               url_file_bilhete: url2,
               url_file_certificado: url3,

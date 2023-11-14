@@ -7,12 +7,17 @@
             src="/img/estude-em-casa.jpg"
             alt="Image"
             class="rounded-0"
+            style="height: 100%"
           ></b-card-img>
         </b-col>
         <b-col md="6">
           <b-row class="mt-2">
             <b-col class="text-center">
-              <i class="fa-solid fa-2x text-danger fa-fire"></i>
+              <!-- <i class="fa-solid fa-2x text-danger fa-fire"></i> -->
+              <img
+                src="/img/icons/telemedicina.png"
+                style="max-width: 18%; padding-top: 1%"
+              />
             </b-col>
           </b-row>
           <b-card-body class="text-center" title="Criar conta">
@@ -39,8 +44,7 @@
                   class="btn btn-secondary"
                   @click="openFile"
                 >
-                  <i class="fa-regular fa-image"></i> ( Opcional ) Carregue uma
-                  foto de perfil
+                  <i class="fa-regular fa-image"></i> Carregue / tire uma foto
                 </button>
                 <div class="mt-2" v-if="items.url_image">
                   {{ items.url_image.name }}
@@ -78,12 +82,26 @@
               </b-col>
             </b-row>
             <b-row class="mt-2">
+              <b-col>
+                <label class="text-danger small" v-if="erros.telemovel">{{
+                  erros.telemovel
+                }}</label>
+                <b-form-input
+                  v-model="items.telemovel"
+                  type="text"
+                  placeholder="Telemovel"
+                ></b-form-input>
+              </b-col>
+            </b-row>
+            <b-row class="mt-2">
               <b-col md="12" class="mb-2">
                 <label class="text-danger small" v-if="erros.instituation">{{
                   erros.instituation
                 }}</label>
                 <select class="form-select" v-model="items.instituacao">
-                  <option selected value="">Escolhe sua Instituição</option>
+                  <option selected value="">
+                    Escolhe uma Instituição de saúde
+                  </option>
                   <option
                     v-for="(ins, index) in instituation"
                     :key="index"
@@ -97,7 +115,11 @@
                 <label class="text-danger small" v-if="erros.acesso">{{
                   erros.acesso
                 }}</label>
-                <select class="form-select" v-model="items.acesso">
+                <select
+                  class="form-select"
+                  @change="onChange($event)"
+                  v-model="items.acesso"
+                >
                   <option value="" selected>Criar conta como:</option>
                   <option value="estudante">
                     <i class="fa fa-graduation-cap"></i> Estudante
@@ -111,7 +133,26 @@
                   </option>
                 </select>
               </b-col>
-              <b-col>
+              <b-col md="12">
+                <label class="text-danger small" v-if="erros.curso">{{
+                  erros.curso
+                }}</label>
+                <select
+                  class="form-select mt-2"
+                  v-model="items.curso"
+                  v-show="tipoInscricao == true"
+                >
+                  <option value="" selected>Escolhe um curso:</option>
+                  <option
+                    :value="c.nome_curso"
+                    v-for="(c, index) in cursos"
+                    :key="index"
+                  >
+                    {{ c.nome_curso }}
+                  </option>
+                </select>
+              </b-col>
+              <b-col class="mt-2">
                 <label class="text-danger small" v-if="erros.genero">{{
                   erros.genero
                 }}</label>
@@ -184,14 +225,18 @@ export default {
     return {
       value: "",
       erros: [],
+      cursos: [],
+      tipoInscricao: false,
       instituation: [],
       loading: false,
       path_edit_img: "",
       items: {
         url_image: "",
         image_name: "",
+        telemovel: "",
         instituacao: "",
         acesso: "",
+        curso: "",
         genero: "",
         nome: "",
         email: "",
@@ -200,6 +245,8 @@ export default {
       confirm_password: "",
     };
   },
+
+  mounted() {},
 
   async created() {
     await this.$firebase
@@ -231,10 +278,39 @@ export default {
   },
 
   methods: {
+    async onChange(event) {
+      if (event.target.value == "estudante") {
+        this.tipoInscricao = true;
+        this.$root.$emit("loading::show");
+        await this.$firebase
+          .firestore()
+          .collection("cursos")
+          .get()
+          .then((snp) => {
+            this.cursos = [];
+            snp.forEach((doc) => {
+              this.cursos.push({
+                id: doc.id,
+                nome_curso: doc.data().nome_curso,
+              });
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .finally(() => {
+            this.$root.$emit("loading::hide");
+          });
+      } else {
+        this.tipoInscricao = false;
+        this.erros.curso = "";
+      }
+    },
     cleanForm() {
       this.items = {
         url_image: "",
         image_name: "",
+        telemovel: "",
         acesso: "",
         genero: "",
         nome: "",
@@ -245,6 +321,16 @@ export default {
     },
 
     validarCampos() {
+      if (this.tipoInscricao != "") {
+        if (this.items.curso == "") {
+          this.erros.push({
+            curso: "Escolhe o curso de sua preferência",
+          });
+          this.erros.curso = "Escolhe o curso de sua preferência";
+        } else {
+          this.erros.curso = "";
+        }
+      }
       if (this.items.nome == "") {
         this.erros.push({
           nome: "Inferme-nos o seu nome completo",
@@ -252,6 +338,14 @@ export default {
         this.erros.nome = "Inferme-nos o seu nome completo";
       } else {
         this.erros.nome = "";
+      }
+      if (this.items.telemovel == "") {
+        this.erros.push({
+          telemovel: "Inferme-nos o seu contacto",
+        });
+        this.erros.telemovel = "Inferme-nos o seu contacto";
+      } else {
+        this.erros.telemovel = "";
       }
 
       if (this.items.url_image == "") {

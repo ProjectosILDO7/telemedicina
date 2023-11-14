@@ -14,6 +14,14 @@ const routes = [
     component:()=>import('../views/HomePage.vue')
   },
   {
+    path:'/testeConferencia',
+    name:'testeConferencia',
+    meta:{
+      icon:'video', title:'Video'
+    },
+    component:()=>import('../views/testeConferencia.vue')
+  },
+  {
     path:'/login',
     name:'login',
     meta:{
@@ -175,13 +183,25 @@ const routes = [
         path:'/turmas2',
         name:'participar_em_aulas_estudante_paciente',
         meta:{icon:'chalkboard-user', title:'Turmas'},
-        component:()=>import('../views/Layout/participar_em_aulas/participarEmAulasEstudante.vue')
+        component:()=>import('../views/Layout/participar_em_aulas/teleAula.vue')
       },
       {
         path:'/assistencia-medica',
         name:'assistencia_medica',
         meta:{icon:'stethoscope', title:'Assistencia-médica'},
         component:()=>import('../views/Layout/assistencia_medica/Assistencia_medica.vue')
+      },
+      {
+        path:'/auth-jitsi',
+        name:'auth0',
+        meta:{icon:'stethoscope', title:'Assistencia-médica'},
+        component:()=>import('../views/Layout/assistencia_medica/authenticateAuth0.vue')
+      },
+      {
+        path:'/pacientes',
+        name:'doentes',
+        meta:{icon:'heart-pulse', title:'Assistencia-médica'},
+        component:()=>import('../views/Layout/assistencia_medica/doentesPage.vue')
       },
     ]
   }

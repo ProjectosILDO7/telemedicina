@@ -23,6 +23,7 @@
               ><i class="fa fa-home"></i> Home</router-link
             >
           </li>
+
           <li class="nav-item">
             <router-link
               v-if="acesso == 'SuperAdmin-dev' || acesso == 'admin-medicina'"
@@ -75,7 +76,7 @@
           >
             <router-link
               class="nav-link text-link-color"
-              :to="{ name: 'notify-page' }"
+              :to="{ name: 'doentes' }"
               ><i class="fa-solid fa-bell"></i
               ><sup>
                 <span
@@ -118,11 +119,7 @@
                   cursos</router-link
                 >
                 <router-link
-                  v-else-if="
-                    acesso == 'medico' ||
-                    acesso == 'enfermeiro' ||
-                    acesso == 'professor'
-                  "
+                  v-else-if="acesso == 'professor'"
                   class="dropdown-item"
                   :to="{ name: 'participar_em_aulas' }"
                   ><i class="fa-solid fa-chart-line"></i> Criar
@@ -211,6 +208,7 @@ export default {
       this.$firebase
         .firestore()
         .collection("consultas_marcadas")
+        .where("idReponsavel", "==", window.uid)
         .onSnapshot((snp) => {
           this.totalNotify = snp.docs.length;
         });

@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container class="md-layout">
     <b-card no-body class="overflow-hidden mt-4" style="max-width: 100%">
       <b-row no-gutters>
         <b-col md="6">
@@ -7,91 +7,90 @@
             src="/img/login-register.jpg"
             alt="Image"
             class="rounded-0"
+            style="height: 100%"
           ></b-card-img>
         </b-col>
         <b-col>
-          <b-card-body class="text-center" title="Login">
-            <b-card class="m-auto border border-white">
-              <b-card-body>
-                <b-row>
-                  <b-col class="text-center">
-                    <i class="fa-solid fa-2x text-danger fa-fire"></i>
-                  </b-col>
-                </b-row>
-                <show-alert />
-                <b-row class="mt-4">
-                  <b-col>
-                    <div class="input-group">
-                      <span class="input-group-text" id="basic-addon1">
-                        <i class="fa-regular fa-envelope"></i>
-                      </span>
-                      <input
-                        type="email"
-                        class="form-control"
-                        placeholder="Digite seu e-mail"
-                        v-model="email"
-                        required
-                      />
-                    </div>
-                  </b-col>
-                </b-row>
+          <b-card-body class="text-center" title="">
+            <b-row>
+              <b-col class="text-center">
+                <img
+                  src="/img/icons/telemedicina.png"
+                  style="max-width: 18%; padding-top: 1%"
+                />
+              </b-col>
+            </b-row>
+            <show-alert />
+            <b-row class="mt-4">
+              <b-col>
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-envelope"></i>
+                  </span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Digite seu e-mail"
+                    v-model="email"
+                    required
+                  />
+                </div>
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-2">
-                  <b-col>
-                    <div class="input-group">
-                      <span class="input-group-text" id="basic-addon1">
-                        <i class="fa-solid fa-user-lock"></i>
-                      </span>
-                      <input
-                        type="password"
-                        class="form-control"
-                        placeholder="Digite sua senha"
-                        v-model="password"
-                        required
-                      />
-                    </div>
-                  </b-col>
-                </b-row>
+            <b-row class="mt-2">
+              <b-col>
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-solid fa-user-lock"></i>
+                  </span>
+                  <input
+                    type="password"
+                    class="form-control"
+                    placeholder="Digite sua senha"
+                    v-model="password"
+                    required
+                  />
+                </div>
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-4">
-                  <b-col md="12" class="d-grid gap-2">
-                    <b-button
-                      variant="outline-success"
-                      @click="toLogin"
-                      :disabled="loading"
-                    >
-                      <span v-if="loading"
-                        ><i class="fa-solid fa-circle-notch fa-spin"></i> Entrar
-                        ...</span
-                      >
-                      <span v-else
-                        ><i class="fa-solid fa-right-to-bracket"></i>
-                        Entrar</span
-                      >
-                    </b-button>
-                  </b-col>
-                </b-row>
+            <b-row class="mt-4">
+              <b-col md="12" class="d-grid gap-2">
+                <b-button
+                  variant="outline-success"
+                  @click="toLogin"
+                  :disabled="loading"
+                >
+                  <span v-if="loading"
+                    ><i class="fa-solid fa-circle-notch fa-spin"></i> Entrar
+                    ...</span
+                  >
+                  <span v-else
+                    ><i class="fa-solid fa-right-to-bracket"></i> Entrar</span
+                  >
+                </b-button>
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-4">
-                  <b-col md="6">
-                    <router-link
-                      :to="{ name: 'inscricoes' }"
-                      class="text-secondary text-decoration-none"
-                    >
-                      <i class="fa-solid fa-envelope"></i> Crie uma conta
-                    </router-link>
-                  </b-col>
-                  <b-col md="6" class="text-center text-secondary">
-                    <router-link
-                      :to="{ name: 'reset-password' }"
-                      class="text-decoration-none"
-                      ><i class="fa-solid fa-user-lock"></i> Esqueci a
-                      senha</router-link
-                    >
-                  </b-col>
-                </b-row>
-              </b-card-body>
-            </b-card>
+            <b-row class="mt-4">
+              <b-col md="6">
+                <router-link
+                  :to="{ name: 'inscricoes' }"
+                  class="text-secondary text-decoration-none"
+                >
+                  <i class="fa-solid fa-envelope"></i> Crie uma conta
+                </router-link>
+              </b-col>
+              <b-col md="6" class="text-center text-secondary">
+                <router-link
+                  :to="{ name: 'reset-password' }"
+                  class="text-decoration-none"
+                  ><i class="fa-solid fa-user-lock"></i> Esqueci a
+                  senha</router-link
+                >
+              </b-col>
+            </b-row>
           </b-card-body>
         </b-col>
       </b-row>

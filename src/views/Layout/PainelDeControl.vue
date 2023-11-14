@@ -2,10 +2,17 @@
   <div>
     <h5>
       <span class="topo-tiltle-page">
-        <div class="container">Painel de controle</div>
+        <div class="container">
+          <span v-if="status != 'paciente' && status != 'estudante'"
+            >Painel de controle</span
+          ><span v-else>Home</span>
+        </div>
       </span>
     </h5>
-    <b-row>
+
+    <b-row
+      v-if="status != 'paciente' && status != 'estudante' && status != 'outra'"
+    >
       <b-col md="12">
         <column-chart
           :library="{ backgroundColor: '#000' }"
@@ -62,6 +69,20 @@
         ></pie-chart>
       </b-col>
     </b-row>
+
+    <b-container v-else>
+      <b-col md="12" v-if="status == 'outra'" class="text-center text-danger">
+        Se estás a ver esta página, isso significa que és um
+        <strong>Professor</strong> ou <strong>médico.</strong> Portanto precisas
+        de autorização para usufluir dos teus serviços.
+      </b-col>
+      <b-col class="d-flex justify-content-center">
+        <img
+          src="/img/icons/telemedicina.png"
+          style="max-width: 280px; padding-top: 200px"
+        />
+      </b-col>
+    </b-container>
   </div>
 </template>
 
@@ -70,6 +91,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      status: "",
       moment: moment,
       totalPaciente: 0,
       totalMedico: 0,
@@ -109,7 +131,21 @@ export default {
     };
   },
 
+  methods: {},
+
   async mounted() {
+    try {
+      await this.$firebase
+        .firestore()
+        .collection("users")
+        .doc(window.uid)
+        .onSnapshot((snp) => {
+          this.status = snp.data()?.acesso;
+          console.log(this.status);
+        });
+    } catch (error) {
+      console.log(error);
+    }
     try {
       await this.$firebase
         .firestore()

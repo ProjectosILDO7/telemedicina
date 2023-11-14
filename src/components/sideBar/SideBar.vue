@@ -75,7 +75,17 @@
         "
       >
         <i class="fa-solid fa-stethoscope"></i>
-        <span class="text">Assistência médica</span>
+        <span class="text" v-if="acesso == 'medico'">Routina médica</span>
+        <span class="text" v-if="acesso == 'paciente'">Consultar o médico</span>
+      </router-link>
+
+      <router-link
+        class="button"
+        :to="{ name: 'doentes' }"
+        v-if="acesso == 'medico' && status == 'activo'"
+      >
+        <i class="fa-solid fa-heart-pulse"></i>
+        <span class="text">Pacientes</span>
       </router-link>
 
       <router-link
@@ -158,7 +168,7 @@ button {
 aside {
   display: flex;
   flex-direction: column;
-  width: calc(1rem + 30px);
+  width: calc(1rem + 32px);
   min-height: 100vh;
   overflow: hidden;
   padding: 1rem;

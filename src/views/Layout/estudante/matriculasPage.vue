@@ -197,7 +197,7 @@
                 />
               </div>
               <b-row class="text-center text-muted mb-2 mt-2">
-                <b-col>Selecione um curso e uma classe</b-col>
+                <b-col>Curso preferido</b-col>
               </b-row>
               <div
                 class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-6 mb-2"
@@ -205,12 +205,13 @@
                 <label class="text-danger small" v-if="erros.curso">{{
                   erros.curso
                 }}</label>
-                <select class="form-select" v-model="item_estudante.curso">
-                  <option selected value="">Selecione um curso</option>
-                  <option v-for="(curso, index) in cursos" :key="index">
-                    {{ curso.nome_curso }}
-                  </option>
-                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Contacto"
+                  v-model="item_estudante.curso"
+                  disabled
+                />
               </div>
 
               <div
@@ -357,7 +358,7 @@ export default {
       erros: [],
       cursos: [],
       classes: [],
-      idEstudante:"",
+      idEstudante: "",
       utilizador: [],
       idDelete: "",
       loading: false,
@@ -378,7 +379,7 @@ export default {
         provincia: "",
         municipio: "",
         contacto: "",
-        idInstituation:"",
+        idInstituation: "",
         curso: "",
         classe: "",
         file_name_bilhete: "",
@@ -431,7 +432,7 @@ export default {
     };
   },
 
-  computed:{
+  computed: {
     fileNameBilhete() {
       const { url_file_bilhete } = this.item_estudante;
       if (url_file_bilhete) {
@@ -451,8 +452,6 @@ export default {
         return "";
       }
     },
-
-
   },
 
   created() {
@@ -651,7 +650,7 @@ export default {
               });
             });
         });
-        this.$root.$emit("loading::hide");
+      this.$root.$emit("loading::hide");
     },
 
     // validar campos de estudante
@@ -802,8 +801,9 @@ export default {
         .doc(window.uid)
         .get()
         .then((snapshot) => {
-          this.idEstudante=snapshot.id
-          this.item_estudante.idInstituation=snapshot.data().instituacao
+          this.idEstudante = snapshot.id;
+          this.item_estudante.idInstituation = snapshot.data().instituacao;
+          this.item_estudante.curso = snapshot.data().curso;
           this.utilizador.push({
             url_image: snapshot.data().url_image,
             nome: snapshot.data().nome,

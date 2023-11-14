@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container class="md-layout">
     <b-card no-body class="overflow-hidden mt-4" style="max-width: 100%">
       <b-row no-gutters>
         <b-col md="6">
@@ -7,6 +7,7 @@
             src="/img/Reset-img.jpg"
             alt="Image"
             class="rounded-0"
+            style="height: 100%"
           ></b-card-img>
         </b-col>
         <b-col>
@@ -16,62 +17,61 @@
               e-mail na caixa baixo e de seguida enviarémos um link de
               redefinição de senha no seu e-mail
             </b-card-text>
-            <b-card class="m-auto border border-white">
-              <b-card-body>
-                <b-row>
-                  <b-col class="text-center">
-                    <i class="fa-solid fa-2x text-danger fa-fire"></i>
-                  </b-col>
-                </b-row>
+            <b-row>
+              <b-col class="text-center">
+                <img
+                  src="/img/icons/telemedicina.png"
+                  style="max-width: 18%; padding-top: 1%"
+                />
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-4">
-                  <b-col>
-                    <span v-if="erro.email" class="text-danger small">{{
-                      erro.email
-                    }}</span>
-                    <div class="input-group">
-                      <span class="input-group-text" id="basic-addon1">
-                        <i class="fa-regular fa-envelope"></i>
-                      </span>
-                      <input
-                        type="email"
-                        class="form-control"
-                        placeholder="Digite seu e-mail"
-                        v-model="items.email"
-                        required
-                      />
-                    </div>
-                  </b-col>
-                </b-row>
+            <b-row class="mt-4">
+              <b-col>
+                <span v-if="erro.email" class="text-danger small">{{
+                  erro.email
+                }}</span>
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon1">
+                    <i class="fa-regular fa-envelope"></i>
+                  </span>
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Digite seu e-mail"
+                    v-model="items.email"
+                    required
+                  />
+                </div>
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-4">
-                  <b-col md="12" class="d-grid gap-2">
-                    <b-button
-                      variant="outline-success"
-                      @click="sendPassword"
-                      :disabled="loading"
-                    >
-                      <span v-if="loading"
-                        ><i class="fa-solid fa-circle-notch"></i
-                      ></span>
-                      <span v-else
-                        ><i class="fa-solid fa-paper-plane"></i> Enviar</span
-                      >
-                    </b-button>
-                  </b-col>
-                </b-row>
+            <b-row class="mt-4">
+              <b-col md="12" class="d-grid gap-2">
+                <b-button
+                  variant="outline-success"
+                  @click="sendPassword"
+                  :disabled="loading"
+                >
+                  <span v-if="loading"
+                    ><i class="fa-solid fa-circle-notch"></i
+                  ></span>
+                  <span v-else
+                    ><i class="fa-solid fa-paper-plane"></i> Enviar</span
+                  >
+                </b-button>
+              </b-col>
+            </b-row>
 
-                <b-row class="mt-4">
-                  <b-col md="12" class="text-center text-secondary">
-                    <router-link
-                      :to="{ name: 'login' }"
-                      class="text-decoration-none"
-                      >Já tenho uma conta</router-link
-                    >
-                  </b-col>
-                </b-row>
-              </b-card-body>
-            </b-card>
+            <b-row class="mt-4">
+              <b-col md="12" class="text-center text-secondary">
+                <router-link
+                  :to="{ name: 'login' }"
+                  class="text-decoration-none"
+                  >Já tenho uma conta</router-link
+                >
+              </b-col>
+            </b-row>
           </b-card-body>
         </b-col>
       </b-row>

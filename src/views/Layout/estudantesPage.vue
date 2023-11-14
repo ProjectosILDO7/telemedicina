@@ -130,30 +130,6 @@
                       v-model="items.data_de_emissao"
                     />
                   </b-col>
-                  <b-col md="12" class="mt-2">
-                    <label class="text-danger small" v-if="erros.nome_curso">{{
-                      erros.nome_curso
-                    }}</label>
-                    <select class="form-select" v-model="items.curso">
-                      <option selected value="">Selecione um curso</option>
-                      <option v-for="(curso, index) in cursos" :key="index">
-                        {{ curso.nome_curso }}
-                      </option>
-                    </select>
-                  </b-col>
-
-                  <b-col md="12" class="mt-2" v-if="formEdit == false">
-                    <label class="text-danger small" v-if="erros.email">{{
-                      erros.email
-                    }}</label>
-                    <input
-                      type="text"
-                      placeholder="E-mail"
-                      class="form-control"
-                      required
-                      v-model="items.email"
-                    />
-                  </b-col>
 
                   <b-col md="12" class="mt-2">
                     <label class="text-danger small" v-if="erros.contacto">{{
@@ -165,6 +141,58 @@
                       class="form-control"
                       required
                       v-model="items.contacto"
+                    />
+                  </b-col>
+
+                  <b-col md="12" class="mt-2">
+                    <label class="text-danger small" v-if="erros.nome_do_pai">{{
+                      erros.nome_do_pai
+                    }}</label>
+                    <input
+                      type="text"
+                      placeholder="Nome do Pai"
+                      class="form-control"
+                      required
+                      v-model="items.nome_do_pai"
+                    />
+                  </b-col>
+
+                  <b-col md="12" class="mt-2">
+                    <label class="text-danger small" v-if="erros.nome_da_mae">{{
+                      erros.nome_da_mae
+                    }}</label>
+                    <input
+                      type="text"
+                      placeholder="Nome da Maê"
+                      class="form-control"
+                      required
+                      v-model="items.nome_da_mae"
+                    />
+                  </b-col>
+
+                  <b-col md="12" class="mt-2">
+                    <label class="text-danger small" v-if="erros.provincia">{{
+                      erros.provincia
+                    }}</label>
+                    <input
+                      type="text"
+                      placeholder="Provincia"
+                      class="form-control"
+                      required
+                      v-model="items.provincia"
+                    />
+                  </b-col>
+
+                  <b-col md="12" class="mt-2">
+                    <label class="text-danger small" v-if="erros.municipio">{{
+                      erros.municipio
+                    }}</label>
+                    <input
+                      type="text"
+                      placeholder="Município"
+                      class="form-control"
+                      required
+                      v-model="items.municipio"
                     />
                   </b-col>
                 </b-row>
@@ -570,7 +598,7 @@ export default {
       oldImage_certificado: "",
 
       items: {
-        idInstituation: "",
+        idInstituicao: "",
         url_image: "",
         nome_image_perfil: "",
         nome: "",
@@ -580,6 +608,8 @@ export default {
         num_estudante: "",
         curso: "",
         email: "",
+        provimvia: "",
+        municipio: "",
         contacto: "",
         url_file_bilhete: "",
         url_file_certificado: "",
@@ -711,24 +741,6 @@ export default {
           "Informe a data de emissão do documento pessoal";
       } else {
         this.erros.data_emissao = "";
-      }
-
-      if (this.items.curso == "") {
-        this.erros.push({
-          nome_curso: "Selecione um curso",
-        });
-        this.erros.nome_curso = "Selecione um curso";
-      } else {
-        this.erros.nome_curso = "";
-      }
-
-      if (this.items.email == "") {
-        this.erros.push({
-          email: "Informe um e-mail válido",
-        });
-        this.erros.email = "Informe um e-mail válido";
-      } else {
-        this.erros.email = "";
       }
 
       if (this.items.contacto == "") {
@@ -1030,7 +1042,7 @@ export default {
       await this.$firebase
         .firestore()
         .collection("estudantes")
-        .where("idInstituation", "==", window.uid)
+        .where("idInstituicao", "==", window.uid)
         .get()
         .then((snapshot) => {
           (this.estudantes = []),
