@@ -134,17 +134,20 @@ export default {
   methods: {},
 
   async mounted() {
+    if (!window.uid) {
+      this.$router.push({ name: "login" });
+    }
     try {
       await this.$firebase
         .firestore()
         .collection("users")
         .doc(window.uid)
-        .onSnapshot((snp) => {
-          this.status = snp.data()?.acesso;
-          console.log(this.status);
+        .get()
+        .then((snp) => {
+          this.status = snp.data().acesso;
         });
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
     try {
       await this.$firebase

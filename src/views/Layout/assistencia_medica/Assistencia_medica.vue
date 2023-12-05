@@ -147,7 +147,6 @@
           </div>
           <div v-else>
             <a href="#"><i class="fa-solid fa-video-slash text-danger"></i></a>
-            - {{ row.item.status }}
           </div>
         </template>
       </b-table>
@@ -272,7 +271,7 @@ export default {
         .doc(window.uid)
         .get()
         .then((snap) => {
-          userAcess = snap.data().acesso;
+          userAcess = snap.data()?.acesso;
         });
       console.log(userAcess);
       if (userAcess == "paciente") {

@@ -179,6 +179,9 @@ export default {
   },
 
   async mounted() {
+    if (window.uid == "") {
+      this.$router.push({ name: "login" });
+    }
     try {
       await this.$firebase
         .firestore()

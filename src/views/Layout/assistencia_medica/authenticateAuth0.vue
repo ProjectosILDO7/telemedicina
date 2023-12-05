@@ -1,35 +1,38 @@
 <template>
   <div class="ratio ratio-16x9">
     <!-- Tele consulta -->
-    <iframe
-      v-if="acesso == 'medico'"
-      allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/656722bb37704c1c343225f0?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
-    >
-    </iframe>
+    <div class="row align-items-center">
+      <div class="col d-flex justify-content-center">
+        <a
+          href="https://telechip2.invc.vc/656f4243c5e2be43dca94aa7?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+          class="ml-2"
+          v-if="acesso == 'medico'"
+        >
+          <h1><i class="fa fa-television" aria-hidden="true"></i></h1
+        ></a>
 
-    <iframe
-      v-else-if="acesso == 'paciente'"
-      allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/656722bb37704c1c343225f0?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
-    >
-    </iframe>
+        <a
+          href="https://telechip2.invc.vc/656f4243c5e2be43dca94aa7?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+          v-if="acesso == 'paciente'"
+        >
+          <h1><i class="fa fa-television" aria-hidden="true"></i></h1
+        ></a>
 
-    <!-- tele aula  -->
+        <a
+          href="https://telechip2.invc.vc/656f430dc5e2be43dca94aaf?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGRpY2luYWNoaXBAZ21haWwuY29t"
+          v-if="acesso == 'professor'"
+        >
+          <h1><i class="fa fa-television" aria-hidden="true"></i></h1
+        ></a>
 
-    <iframe
-      v-if="acesso == 'professor'"
-      allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/65672485f3dcf203af60bb58?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
-    >
-    </iframe>
-
-    <iframe
-      v-else
-      allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/65672485f3dcf203af60bb58?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
-    >
-    </iframe>
+        <a
+          href="https://telechip2.invc.vc/656f430dc5e2be43dca94aaf?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+          v-if="acesso == 'estudante'"
+        >
+          <h1><i class="fa fa-television" aria-hidden="true"></i></h1
+        ></a>
+      </div>
+    </div>
   </div>
 </template>
 
