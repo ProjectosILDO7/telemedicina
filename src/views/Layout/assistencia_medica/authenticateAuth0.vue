@@ -4,29 +4,30 @@
     <iframe
       v-if="acesso == 'medico'"
       allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/6553e3d7a1a8305f94769fa5?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+      src="https://telechip2.invc.vc/656722bb37704c1c343225f0?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
     >
     </iframe>
 
     <iframe
       v-else-if="acesso == 'paciente'"
       allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/6553e3d7a1a8305f94769fa5?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+      src="https://telechip2.invc.vc/656722bb37704c1c343225f0?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
     >
     </iframe>
 
     <!-- tele aula  -->
+
     <iframe
       v-if="acesso == 'professor'"
       allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/6553e2baa1a8305f94769f9d?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+      src="https://telechip2.invc.vc/65672485f3dcf203af60bb58?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
     >
     </iframe>
 
     <iframe
       v-else
       allow="camera; microphone; fullscreen; speaker; display-capture"
-      src="https://telechip2.invc.vc/6553e2baa1a8305f94769f9d?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+      src="https://telechip2.invc.vc/65672485f3dcf203af60bb58?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
     >
     </iframe>
   </div>

@@ -213,13 +213,4 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next)=>{
-  document.title=`${to.meta.title} - TelemedicinaChip`
-  if(!window.uid && to.name !=='login' && to.name !=='home' && to.name !=='paciente' && to.name !=='curso-detalhe' && to.name !=='curso-componente' && to.name !=='cursos' && to.name !=='inscricoes' && to.name !=='reset-password' && to.name !=="findMedico" && to.name !=="medico-detalhe"){
-    next({name:'home'})
-  }else{
-    next()
-  }
-})
-
 export default router
