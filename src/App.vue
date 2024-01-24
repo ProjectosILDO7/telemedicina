@@ -8,7 +8,7 @@
       <nav-bar />
       <router-view />
       <footer-component />
-      <seed-database-vue />
+      <!-- <seed-database-vue /> -->
     </div>
   </div>
 </template>
@@ -18,10 +18,10 @@ import preloading from "./components/preloading/PreloadingComponent.vue";
 import FooterComponent from "./components/footer/FooterComponent.vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import NavBar from "./components/navBar/navBar.vue";
-import seedDatabaseVue from "./components/sementeDatabase/seedDatabase.vue";
+// import seedDatabaseVue from "./components/sementeDatabase/seedDatabase.vue";
 export default {
   name: "app-home",
-  components: { preloading, FooterComponent, NavBar, seedDatabaseVue },
+  components: { preloading, FooterComponent, NavBar },
   data() {
     return {
       isLoged: false,

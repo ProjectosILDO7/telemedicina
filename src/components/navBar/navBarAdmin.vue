@@ -213,7 +213,7 @@ export default {
         .collection("consultas_marcadas")
         .where("idReponsavel", "==", window.uid)
         .onSnapshot((snp) => {
-          this.totalNotify = snp.docs.length;
+          this.totalNotify = snp.docs?.length;
         });
     } catch (error) {
       console.log(error.message);

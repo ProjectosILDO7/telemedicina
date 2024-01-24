@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col d-flex justify-content-center">
         <a
-          href="https://telechip2.invc.vc/659e51ae68649911af3c9a5a?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+          href="https://telechip2.invc.vc/65b0c8f149a450c7a66c5569?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
           class="ml-2"
           v-if="acesso == 'medico'"
         >
@@ -12,21 +12,21 @@
         ></a>
 
         <a
-          href="https://telechip2.invc.vc/659e51ae68649911af3c9a5a?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+          href="https://telechip2.invc.vc/65b0c8f149a450c7a66c5569?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
           v-if="acesso == 'paciente'"
         >
           <h1><i class="fa fa-television" aria-hidden="true"></i></h1
         ></a>
 
         <a
-          href="https://telechip2.invc.vc/659e5235c7a8c7923b9067b9?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+          href="https://telechip2.invc.vc/65b0ca1049a450c7a66c5571?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
           v-if="acesso == 'professor'"
         >
           <h1><i class="fa fa-television" aria-hidden="true"></i></h1
         ></a>
 
         <a
-          href="https://telechip2.invc.vc/659e5235c7a8c7923b9067b9?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+          href="https://telechip2.invc.vc/65b0ca1049a450c7a66c5571?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
           v-if="acesso == 'estudante'"
         >
           <h1><i class="fa fa-television" aria-hidden="true"></i></h1

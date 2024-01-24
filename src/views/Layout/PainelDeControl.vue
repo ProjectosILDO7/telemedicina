@@ -144,7 +144,7 @@ export default {
         .doc(window.uid)
         .get()
         .then((snp) => {
-          this.status = snp.data().acesso;
+          this.status = snp.data()?.acesso;
         });
     } catch (error) {
       console.log(error.message);
