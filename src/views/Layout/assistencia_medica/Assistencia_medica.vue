@@ -363,6 +363,7 @@ export default {
           .get()
           .then((snapshot) => {
             this.item_funcionario = snapshot.data();
+            console.log(this.item_funcionario);
           });
       } catch (error) {
         console.log(error.message);

@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col d-flex justify-content-center">
         <a
-          href="https://telechip2.invc.vc/65ba26583ca174b3e8f73434?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
+          href="https://telechip2.invc.vc/65c36b8c13454867ced13a1c?projectId=654b5879564f69294c2a452a&uid=dGVsZW1lZGljaW5hY2hpcEBnbWFpbC5jb20="
           class="ml-2"
           v-if="acesso == 'medico'"
         >
@@ -12,7 +12,7 @@
         ></a>
 
         <a
-          href="https://telechip2.invc.vc/65ba26583ca174b3e8f73434?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
+          href="https://telechip2.invc.vc/65c36b8c13454867ced13a1c?projectId=654b5879564f69294c2a452a&uid=UGFydGljaXBhbnRz"
           v-if="acesso == 'paciente'"
         >
           <h1><i class="fa fa-television" aria-hidden="true"></i></h1
